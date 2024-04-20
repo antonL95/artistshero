@@ -15,7 +15,7 @@ class ContactFormMail extends Mailable
     use Queueable, SerializesModels;
 
     /**
-     * Create a new message instance.
+     * @param string $subject
      */
     public function __construct(
         private readonly string $email,
@@ -33,7 +33,7 @@ class ContactFormMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            replyTo: $this->email,
+            replyTo: [$this->email],
             subject: $this->subject,
         );
     }
