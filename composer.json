@@ -4,30 +4,49 @@
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Durlecode/editorjs-simple-html-parser.git"
+        }
+    ],
     "require": {
         "php": "^8.2",
+        "ext-dom": "*",
         "althinect/filament-spatie-roles-permissions": "^2.2",
+        "awcodes/filament-curator": "^3.5",
+        "awcodes/filament-tiptap-editor": "^3.0",
+        "diglactic/laravel-breadcrumbs": "^9.0",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
+        "filament/spatie-laravel-translatable-plugin": "^3.2",
         "laravel/breeze": "^2.0",
         "laravel/framework": "^11.0",
         "laravel/pulse": "^1.0@beta",
         "laravel/tinker": "^2.9",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0",
-        "spatie/laravel-permission": "^6.4"
+        "masterminds/html5": "^2.9",
+        "resend/resend-laravel": "^0.11.0",
+        "sentry/sentry-laravel": "^4.4",
+        "spatie/laravel-permission": "^6.4",
+        "tallstackui/tallstackui": "^1.23",
+        "wireui/phosphoricons": "^2.2"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-latest",
+        "barryvdh/laravel-debugbar": "^3.13",
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^2.6",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
-        "spatie/laravel-ignition": "^2.4",
-        "larastan/larastan": "^2.6"
+        "pestphp/pest-plugin-type-coverage": "^2.8",
+        "roave/security-advisories": "dev-latest",
+        "spatie/laravel-ignition": "^2.4"
     },
     "autoload": {
         "psr-4": {

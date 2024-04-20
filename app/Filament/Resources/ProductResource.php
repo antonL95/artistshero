@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
+use App\Filament\Resources\ProductResource\RelationManagers\FiltersRelationManager;
 use App\Models\Product;
-use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
@@ -14,41 +19,46 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Product::class;
 
     protected static ?string $slug = 'products';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Placeholder::make('created_at')
-                    ->label('Created Date')
-                    ->content(fn (?Product $record): string => $record?->created_at?->diffForHumans() ?? '-'),
-
-                Placeholder::make('updated_at')
-                    ->label('Last Modified Date')
-                    ->content(fn (?Product $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
-
                 TextInput::make('name')
                     ->required(),
 
-                TextInput::make('description')
+                TiptapEditor::make('description')
+                    ->profile('simple')
+                    ->columnSpanFull()
                     ->required(),
 
-                TextInput::make('locale')
+                Select::make('artist_id')
+                    ->relationship('artist', 'name')
                     ->required(),
+
+                Select::make('filters')
+                    ->relationship('filters', 'name')
+                    ->multiple(),
+
+                Hidden::make('created_by')->default(auth()->id()),
+
+                Hidden::make('updated_by')->default(auth()->id()),
+
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
@@ -57,10 +67,6 @@ class ProductResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('description'),
-
-                TextColumn::make('locale'),
             ])
             ->filters([
                 //
@@ -76,7 +82,6 @@ class ProductResource extends Resource
             ]);
     }
 
-
     public static function getPages(): array
     {
         return [
@@ -86,22 +91,26 @@ class ProductResource extends Resource
         ];
     }
 
-
+    /**
+     * @return Builder<Product>
+     */
     public static function getGlobalSearchEloquentQuery(): Builder
     {
         return parent::getGlobalSearchEloquentQuery()->with(['artist', 'createdBy', 'updatedBy']);
     }
-
 
     public static function getGloballySearchableAttributes(): array
     {
         return ['name', 'artist.name', 'createdBy.name', 'updatedBy.name'];
     }
 
-
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         $details = [];
+
+        if (!$record instanceof Product) {
+            return $details;
+        }
 
         if ($record->artist) {
             $details['Artist'] = $record->artist->name;
@@ -115,6 +124,13 @@ class ProductResource extends Resource
             $details['UpdatedBy'] = $record->updatedBy->name;
         }
 
-        return $details;
+        return $details; //@phpstan-ignore-line
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            FiltersRelationManager::class,
+        ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\User;
@@ -19,7 +21,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Anton Loginov',
             'email' => 'anton@artistshero.com',
-            'password' => Hash::make('#zy!xW2CVJkcjU')
+            'password' => Hash::make('#zy!xW2CVJkcjU'),
         ]);
     }
 }

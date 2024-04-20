@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Filter;
@@ -10,15 +12,13 @@ class FilterFactory extends Factory
 {
     protected $model = Filter::class;
 
-
     public function definition(): array
     {
         return [
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-            'name' => $this->faker->name(),
-            'type' => $this->faker->word(),
-            'locale' => $this->faker->word(),
+            'name' => [app()->getLocale() => $this->faker->word()],
+            'type' => [app()->getLocale() => $this->faker->word()],
         ];
     }
 }

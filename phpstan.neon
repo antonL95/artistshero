@@ -11,7 +11,8 @@ parameters:
 
     ignoreErrors:
 #
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
+    excludePaths:
+        - ./app/Console/Commands/MigrateCommand.php
+        - ./app/Helpers/EditorJsParser.php
 #
 #    checkMissingIterableValueType: false

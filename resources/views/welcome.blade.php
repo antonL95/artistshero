@@ -1,145 +1,448 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@php
+    use App\Models\Post;
+    use App\Models\Product;
+    use Illuminate\Support\Facades\Storage;
+@endphp
 
-        <title>Laravel</title>
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-
-        <!-- Styles -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="antialiased font-sans">
-        <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
-            <img id="background" class="absolute -left-20 top-0 max-w-[877px]" src="https://laravel.com/assets/img/welcome/background.svg" />
-            <div class="relative min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-                <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                    <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
-                        <div class="flex lg:justify-center lg:col-start-2">
-                            <svg class="h-12 w-auto text-white lg:h-16 lg:text-[#FF2D20]" viewBox="0 0 62 65" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z" fill="currentColor"/></svg>
-                        </div>
-                        @if (Route::has('login'))
-                            <livewire:welcome.navigation />
-                        @endif
-                    </header>
-
-                    <main class="mt-6">
-                        <div class="grid gap-6 lg:grid-cols-2 lg:gap-8">
-                            <a
-                                href="https://laravel.com/docs"
-                                id="docs-card"
-                                class="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] md:row-span-3 lg:p-10 lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
+<x-app-layout>
+    <section class="relative w-full scroll-mt-[520px] md:flex md:h-[730px]" id="intro">
+        <img
+            class="absolute right-0 top-0 z-[-1] hidden md:block"
+            src="{{ asset('img/hero_section.jpg') }}"
+            alt="{{ config('app.name') }}"
+        />
+        <div class="container mx-auto">
+            <section class="max-w-3xl md:mt-24">
+                <h1 class="whitespace-pre-line text-[2rem] font-medium md:whitespace-normal md:text-7xl">
+                    {{ __('hero.title') }}
+                </h1>
+                <h3 class="text-xl">
+                    <div class="relative inline-block h-[33px] w-[155px] md:w-[226px]">
+                        <span class="absolute animate-topToBottom opacity-0">
+                            {{ __('hero.subtitle1') }}
+                        </span>
+                        <span class="absolute animate-topToBottom opacity-0" style="animation-delay: 5s">
+                            {{ __('hero.subtitle2') }}
+                        </span>
+                        <span class="absolute animate-topToBottom opacity-0" style="animation-delay: 10s">
+                            {{ __('hero.subtitle3') }}
+                        </span>
+                        <span class="absolute bottom-0 md:bottom-[-3px]">
+                            <svg
+                                class="w-[155px] md:w-[188px]"
+                                viewBox="0 0 188 9"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
                             >
-                                <div id="screenshot-container" class="relative flex w-full flex-1 items-stretch">
-                                    <img
-                                        src="https://laravel.com/assets/img/welcome/docs-light.svg"
-                                        alt="Laravel documentation screenshot"
-                                        class="aspect-video h-full w-full flex-1 rounded-[10px] object-top object-cover drop-shadow-[0px_4px_34px_rgba(0,0,0,0.06)] dark:hidden"
-                                        onerror="
-                                            document.getElementById('screenshot-container').classList.add('!hidden');
-                                            document.getElementById('docs-card').classList.add('!row-span-1');
-                                            document.getElementById('docs-card-content').classList.add('!flex-row');
-                                            document.getElementById('background').classList.add('!hidden');
-                                        "
-                                    />
-                                    <img
-                                        src="https://laravel.com/assets/img/welcome/docs-dark.svg"
-                                        alt="Laravel documentation screenshot"
-                                        class="hidden aspect-video h-full w-full flex-1 rounded-[10px] object-top object-cover drop-shadow-[0px_4px_34px_rgba(0,0,0,0.25)] dark:block"
-                                    />
-                                    <div
-                                        class="absolute -bottom-16 -left-16 h-40 w-[calc(100%+8rem)] bg-gradient-to-b from-transparent via-white to-white dark:via-zinc-900 dark:to-zinc-900"
-                                    ></div>
-                                </div>
-
-                                <div class="relative flex items-center gap-6 lg:items-end">
-                                    <div id="docs-card-content" class="flex items-start gap-6 lg:flex-col">
-                                        <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                            <svg class="size-5 sm:size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#FF2D20" d="M23 4a1 1 0 0 0-1.447-.894L12.224 7.77a.5.5 0 0 1-.448 0L2.447 3.106A1 1 0 0 0 1 4v13.382a1.99 1.99 0 0 0 1.105 1.79l9.448 4.728c.14.065.293.1.447.1.154-.005.306-.04.447-.105l9.453-4.724a1.99 1.99 0 0 0 1.1-1.789V4ZM3 6.023a.25.25 0 0 1 .362-.223l7.5 3.75a.251.251 0 0 1 .138.223v11.2a.25.25 0 0 1-.362.224l-7.5-3.75a.25.25 0 0 1-.138-.22V6.023Zm18 11.2a.25.25 0 0 1-.138.224l-7.5 3.75a.249.249 0 0 1-.329-.099.249.249 0 0 1-.033-.12V9.772a.251.251 0 0 1 .138-.224l7.5-3.75a.25.25 0 0 1 .362.224v11.2Z"/><path fill="#FF2D20" d="m3.55 1.893 8 4.048a1.008 1.008 0 0 0 .9 0l8-4.048a1 1 0 0 0-.9-1.785l-7.322 3.706a.506.506 0 0 1-.452 0L4.454.108a1 1 0 0 0-.9 1.785H3.55Z"/></svg>
-                                        </div>
-
-                                        <div class="pt-3 sm:pt-5 lg:pt-0">
-                                            <h2 class="text-xl font-semibold text-black dark:text-white">Documentation</h2>
-
-                                            <p class="mt-4 text-sm/relaxed">
-                                                Laravel has wonderful documentation covering every aspect of the framework. Whether you are a newcomer or have prior experience with Laravel, we recommend reading our documentation from beginning to end.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <svg class="size-6 shrink-0 stroke-[#FF2D20]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
-                                </div>
-                            </a>
-
-                            <a
-                                href="https://laracasts.com"
-                                class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                            >
-                                <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                    <svg class="size-5 sm:size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><g fill="#FF2D20"><path d="M24 8.25a.5.5 0 0 0-.5-.5H.5a.5.5 0 0 0-.5.5v12a2.5 2.5 0 0 0 2.5 2.5h19a2.5 2.5 0 0 0 2.5-2.5v-12Zm-7.765 5.868a1.221 1.221 0 0 1 0 2.264l-6.626 2.776A1.153 1.153 0 0 1 8 18.123v-5.746a1.151 1.151 0 0 1 1.609-1.035l6.626 2.776ZM19.564 1.677a.25.25 0 0 0-.177-.427H15.6a.106.106 0 0 0-.072.03l-4.54 4.543a.25.25 0 0 0 .177.427h3.783c.027 0 .054-.01.073-.03l4.543-4.543ZM22.071 1.318a.047.047 0 0 0-.045.013l-4.492 4.492a.249.249 0 0 0 .038.385.25.25 0 0 0 .14.042h5.784a.5.5 0 0 0 .5-.5v-2a2.5 2.5 0 0 0-1.925-2.432ZM13.014 1.677a.25.25 0 0 0-.178-.427H9.101a.106.106 0 0 0-.073.03l-4.54 4.543a.25.25 0 0 0 .177.427H8.4a.106.106 0 0 0 .073-.03l4.54-4.543ZM6.513 1.677a.25.25 0 0 0-.177-.427H2.5A2.5 2.5 0 0 0 0 3.75v2a.5.5 0 0 0 .5.5h1.4a.106.106 0 0 0 .073-.03l4.54-4.543Z"/></g></svg>
-                                </div>
-
-                                <div class="pt-3 sm:pt-5">
-                                    <h2 class="text-xl font-semibold text-black dark:text-white">Laracasts</h2>
-
-                                    <p class="mt-4 text-sm/relaxed">
-                                        Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
-                                    </p>
-                                </div>
-
-                                <svg class="size-6 shrink-0 self-center stroke-[#FF2D20]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
-                            </a>
-
-                            <a
-                                href="https://laravel-news.com"
-                                class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                            >
-                                <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                    <svg class="size-5 sm:size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><g fill="#FF2D20"><path d="M8.75 4.5H5.5c-.69 0-1.25.56-1.25 1.25v4.75c0 .69.56 1.25 1.25 1.25h3.25c.69 0 1.25-.56 1.25-1.25V5.75c0-.69-.56-1.25-1.25-1.25Z"/><path d="M24 10a3 3 0 0 0-3-3h-2V2.5a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2V20a3.5 3.5 0 0 0 3.5 3.5h17A3.5 3.5 0 0 0 24 20V10ZM3.5 21.5A1.5 1.5 0 0 1 2 20V3a.5.5 0 0 1 .5-.5h14a.5.5 0 0 1 .5.5v17c0 .295.037.588.11.874a.5.5 0 0 1-.484.625L3.5 21.5ZM22 20a1.5 1.5 0 1 1-3 0V9.5a.5.5 0 0 1 .5-.5H21a1 1 0 0 1 1 1v10Z"/><path d="M12.751 6.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 7.3v-.5a.75.75 0 0 1 .751-.753ZM12.751 10.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 11.3v-.5a.75.75 0 0 1 .751-.753ZM4.751 14.047h10a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-10A.75.75 0 0 1 4 15.3v-.5a.75.75 0 0 1 .751-.753ZM4.75 18.047h7.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-7.5A.75.75 0 0 1 4 19.3v-.5a.75.75 0 0 1 .75-.753Z"/></g></svg>
-                                </div>
-
-                                <div class="pt-3 sm:pt-5">
-                                    <h2 class="text-xl font-semibold text-black dark:text-white">Laravel News</h2>
-
-                                    <p class="mt-4 text-sm/relaxed">
-                                        Laravel News is a community driven portal and newsletter aggregating all of the latest and most important news in the Laravel ecosystem, including new package releases and tutorials.
-                                    </p>
-                                </div>
-
-                                <svg class="size-6 shrink-0 self-center stroke-[#FF2D20]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
-                            </a>
-
-                            <div class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800">
-                                <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                    <svg class="size-5 sm:size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <g fill="#FF2D20">
-                                            <path
-                                                d="M16.597 12.635a.247.247 0 0 0-.08-.237 2.234 2.234 0 0 1-.769-1.68c.001-.195.03-.39.084-.578a.25.25 0 0 0-.09-.267 8.8 8.8 0 0 0-4.826-1.66.25.25 0 0 0-.268.181 2.5 2.5 0 0 1-2.4 1.824.045.045 0 0 0-.045.037 12.255 12.255 0 0 0-.093 3.86.251.251 0 0 0 .208.214c2.22.366 4.367 1.08 6.362 2.118a.252.252 0 0 0 .32-.079 10.09 10.09 0 0 0 1.597-3.733ZM13.616 17.968a.25.25 0 0 0-.063-.407A19.697 19.697 0 0 0 8.91 15.98a.25.25 0 0 0-.287.325c.151.455.334.898.548 1.328.437.827.981 1.594 1.619 2.28a.249.249 0 0 0 .32.044 29.13 29.13 0 0 0 2.506-1.99ZM6.303 14.105a.25.25 0 0 0 .265-.274 13.048 13.048 0 0 1 .205-4.045.062.062 0 0 0-.022-.07 2.5 2.5 0 0 1-.777-.982.25.25 0 0 0-.271-.149 11 11 0 0 0-5.6 2.815.255.255 0 0 0-.075.163c-.008.135-.02.27-.02.406.002.8.084 1.598.246 2.381a.25.25 0 0 0 .303.193 19.924 19.924 0 0 1 5.746-.438ZM9.228 20.914a.25.25 0 0 0 .1-.393 11.53 11.53 0 0 1-1.5-2.22 12.238 12.238 0 0 1-.91-2.465.248.248 0 0 0-.22-.187 18.876 18.876 0 0 0-5.69.33.249.249 0 0 0-.179.336c.838 2.142 2.272 4 4.132 5.353a.254.254 0 0 0 .15.048c1.41-.01 2.807-.282 4.117-.802ZM18.93 12.957l-.005-.008a.25.25 0 0 0-.268-.082 2.21 2.21 0 0 1-.41.081.25.25 0 0 0-.217.2c-.582 2.66-2.127 5.35-5.75 7.843a.248.248 0 0 0-.09.299.25.25 0 0 0 .065.091 28.703 28.703 0 0 0 2.662 2.12.246.246 0 0 0 .209.037c2.579-.701 4.85-2.242 6.456-4.378a.25.25 0 0 0 .048-.189 13.51 13.51 0 0 0-2.7-6.014ZM5.702 7.058a.254.254 0 0 0 .2-.165A2.488 2.488 0 0 1 7.98 5.245a.093.093 0 0 0 .078-.062 19.734 19.734 0 0 1 3.055-4.74.25.25 0 0 0-.21-.41 12.009 12.009 0 0 0-10.4 8.558.25.25 0 0 0 .373.281 12.912 12.912 0 0 1 4.826-1.814ZM10.773 22.052a.25.25 0 0 0-.28-.046c-.758.356-1.55.635-2.365.833a.25.25 0 0 0-.022.48c1.252.43 2.568.65 3.893.65.1 0 .2 0 .3-.008a.25.25 0 0 0 .147-.444c-.526-.424-1.1-.917-1.673-1.465ZM18.744 8.436a.249.249 0 0 0 .15.228 2.246 2.246 0 0 1 1.352 2.054c0 .337-.08.67-.23.972a.25.25 0 0 0 .042.28l.007.009a15.016 15.016 0 0 1 2.52 4.6.25.25 0 0 0 .37.132.25.25 0 0 0 .096-.114c.623-1.464.944-3.039.945-4.63a12.005 12.005 0 0 0-5.78-10.258.25.25 0 0 0-.373.274c.547 2.109.85 4.274.901 6.453ZM9.61 5.38a.25.25 0 0 0 .08.31c.34.24.616.561.8.935a.25.25 0 0 0 .3.127.631.631 0 0 1 .206-.034c2.054.078 4.036.772 5.69 1.991a.251.251 0 0 0 .267.024c.046-.024.093-.047.141-.067a.25.25 0 0 0 .151-.23A29.98 29.98 0 0 0 15.957.764a.25.25 0 0 0-.16-.164 11.924 11.924 0 0 0-2.21-.518.252.252 0 0 0-.215.076A22.456 22.456 0 0 0 9.61 5.38Z"
-                                            />
-                                        </g>
-                                    </svg>
-                                </div>
-
-                                <div class="pt-3 sm:pt-5">
-                                    <h2 class="text-xl font-semibold text-black dark:text-white">Vibrant Ecosystem</h2>
-
-                                    <p class="mt-4 text-sm/relaxed">
-                                        Laravel's robust library of first-party tools and libraries, such as <a href="https://forge.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Forge</a>, <a href="https://vapor.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Vapor</a>, <a href="https://nova.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Nova</a>, and <a href="https://envoyer.io" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Envoyer</a> help you take your projects to the next level. Pair them with powerful open source libraries like <a href="https://laravel.com/docs/billing" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Cashier</a>, <a href="https://laravel.com/docs/dusk" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Dusk</a>, <a href="https://laravel.com/docs/broadcasting" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Echo</a>, <a href="https://laravel.com/docs/horizon" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Horizon</a>, <a href="https://laravel.com/docs/sanctum" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Sanctum</a>, <a href="https://laravel.com/docs/telescope" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Telescope</a>, and more.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-
-                    <footer class="py-16 text-center text-sm text-black dark:text-white/70">
-                        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
-                    </footer>
+                                <path
+                                    d="M0.5 7.5C0.5 7.5 36 1.5 94 1.5C152 1.5 187.5 7.5 187.5 7.5"
+                                    stroke="#CCCCCC"
+                                    strokeWidth="2"
+                                />
+                            </svg>
+                        </span>
+                    </div>
+                    &nbsp;
+                    <div class="relative block">
+                        {{ __('hero.subtitle') }}
+                    </div>
+                </h3>
+            </section>
+            <section class="md:hidden">
+                <img src="{{ asset('img/hero_section.jpg') }}" alt="{{ config('app.name') }}" />
+            </section>
+        </div>
+    </section>
+    <section class="scroll-mt-[520px] bg-black py-4 text-white md:py-16" id="why">
+        <div class="container mx-auto grid grid-cols-1 md:flex md:w-9/12 md:flex-col md:justify-between">
+            <h2 class="text-center text-5xl font-medium">
+                {{ __('why.heading') }}
+            </h2>
+            <img
+                src="{{ asset('img/why_section.jpg') }}"
+                alt="{{ config('app.name') }} - why art"
+                class="mt-4 md:mt-20 md:self-center"
+            />
+            <article class="hidden whitespace-pre-line md:mt-16 md:block md:w-9/12">
+                {{ __('why.content') }}
+            </article>
+            <x-spoiler :content="__('why.content')" class="md:hidden" />
+        </div>
+    </section>
+    <section class="scroll-mt-[520px] bg-white py-4 text-black md:py-16" id="benefits">
+        <div class="mx-auto grid grid-cols-1 md:grid-cols-2 md:justify-items-center">
+            <div class="mt-16 flex md:mt-20 md:w-8/12">
+                <div class="h-6 w-6 md:pl-0">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M29.4148 21.6663L23.08 15.3304L29.4137 8.99638C29.7889 8.62155 29.9999 8.11303 30.0002 7.58268C30.0005 7.05233 29.7901 6.54356 29.4154 6.16828L29.4137 6.16628L25.8337 2.58628C25.4588 2.21102 24.9502 2.00004 24.4198 1.99976C23.8894 1.99947 23.3806 2.20991 23.0053 2.58478L23.0036 2.58628L16.67 8.91928L10.3352 2.58378C9.9596 2.20978 9.4511 1.99984 8.92105 1.99993C8.391 2.00003 7.88257 2.21014 7.5071 2.58428L2.5854 7.50618C2.21055 7.8814 1.99998 8.39009 1.99998 8.92048C1.99998 9.45087 2.21055 9.95956 2.5854 10.3348L8.9192 16.6693L2 23.5882V29.9999H8.4106L15.3296 23.0805L21.665 29.4169C22.0411 29.7903 22.5496 29.9999 23.0796 29.9999C23.6095 29.9999 24.118 29.7903 24.4941 29.4169L29.4148 24.4946C29.7896 24.1194 30.0001 23.6107 30.0001 23.0804C30.0001 22.5501 29.7896 22.0415 29.4148 21.6663ZM24.4133 3.99628L28.0033 7.58628L21.67 13.9199L18.08 10.3299L24.4133 3.99628ZM8 27.9999H4V24.4085L10.3291 18.0799L14.0061 21.7577L8 27.9999ZM23.08 28.0034L4 8.92118L8.9219 3.99988L12.71 7.78738L10.458 10.0399L11.8733 11.454L14.124 9.20198L18.2534 13.3314L16 15.5833L17.416 16.9974L19.6677 14.7454L23.7977 18.8754L21.546 21.1264L22.9601 22.5414L25.2117 20.2899L28.0024 23.0809L23.08 28.0034Z"
+                            fill="#666666"
+                        />
+                    </svg>
+                </div>
+                <div class="px-5">
+                    <h2 class="flex flex-row text-2xl">
+                        {{ __('benefits.creativity.heading') }}
+                    </h2>
+                    <h3 class="font-urbanist text-6xl font-extralight text-black">61 %</h3>
+                    <p class="mb-8 mt-2 text-lg text-gray-60">
+                        {{ __('benefits.creativity.subheading') }}
+                    </p>
+                    <x-spoiler :content="__('benefits.creativity.content')" />
+                </div>
+            </div>
+            <div class="mt-16 flex md:mt-20 md:w-8/12">
+                <div class="h-6 w-6 md:pl-0">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M26 13C27.0605 12.9988 28.0772 12.577 28.8271 11.8271C29.577 11.0772 29.9988 10.0605 30 9V6H27C25.9762 6.00167 24.9924 6.39794 24.2532 7.1064C23.7352 6.16633 22.9746 5.38231 22.0507 4.83597C21.1268 4.28964 20.0733 4.00096 19 4H16V7C16.0017 8.59076 16.6344 10.1159 17.7593 11.2407C18.8841 12.3656 20.4092 12.9983 22 13H23V26H11V21H12C13.0605 20.9988 14.0772 20.577 14.8271 19.8271C15.577 19.0772 15.9988 18.0605 16 17V14H13C11.9762 14.0017 10.9924 14.3979 10.2532 15.1064C9.73518 14.1663 8.97462 13.3823 8.05072 12.836C7.12682 12.2896 6.07335 12.001 5 12H2V15C2.00175 16.5908 2.63445 18.1159 3.75929 19.2407C4.88413 20.3656 6.40924 20.9983 8 21H9V26H2V28H30V26H25V13H26ZM25 10C25.0005 9.46973 25.2114 8.96133 25.5864 8.58637C25.9613 8.21141 26.4697 8.00053 27 8H28V9C27.9995 9.53027 27.7886 10.0387 27.4136 10.4136C27.0387 10.7886 26.5303 10.9995 26 11H25V10ZM11 18C11.0005 17.4697 11.2114 16.9613 11.5864 16.5864C11.9613 16.2114 12.4697 16.0005 13 16H14V17C13.9995 17.5303 13.7886 18.0387 13.4136 18.4136C13.0387 18.7886 12.5303 18.9995 12 19H11V18ZM9 19H8C6.9395 18.9988 5.92278 18.577 5.17289 17.8271C4.423 17.0772 4.00119 16.0605 4 15V14H5C6.0605 14.0012 7.07722 14.423 7.82711 15.1729C8.577 15.9228 8.99881 16.9395 9 18V19ZM23 11H22C20.9395 10.9988 19.9228 10.577 19.1729 9.82711C18.423 9.07722 18.0012 8.0605 18 7V6H19C20.0605 6.00119 21.0772 6.423 21.8271 7.17289C22.577 7.92278 22.9988 8.9395 23 10V11Z"
+                            fill="#666666"
+                        />
+                    </svg>
+                </div>
+                <div class="px-5">
+                    <h2 class="flex flex-row text-2xl">
+                        {{ __('benefits.wellbeing.heading') }}
+                    </h2>
+                    <h3 class="font-urbanist text-6xl font-extralight text-black">94 %</h3>
+                    <p class="mb-8 mt-2 text-lg text-gray-60">
+                        {{ __('benefits.creativity.subheading') }}
+                    </p>
+                    <x-spoiler :content="__('benefits.wellbeing.content')" />
+                </div>
+            </div>
+            <img
+                src="{{ asset('img/benefits_1.jpg') }}"
+                alt="{{ config('app.name') }} - benefit identity"
+                class="mt-16 md:mt-20"
+            />
+            <div class="mt-16 flex md:mt-20 md:w-8/12">
+                <div class="h-6 w-6 md:pl-0">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10 14C11.1046 14 12 13.1046 12 12C12 10.8954 11.1046 10 10 10C8.89543 10 8 10.8954 8 12C8 13.1046 8.89543 14 10 14Z"
+                            fill="#666666"
+                        />
+                        <path
+                            d="M16 11C17.1046 11 18 10.1046 18 9C18 7.89543 17.1046 7 16 7C14.8954 7 14 7.89543 14 9C14 10.1046 14.8954 11 16 11Z"
+                            fill="#666666"
+                        />
+                        <path
+                            d="M22 14C23.1046 14 24 13.1046 24 12C24 10.8954 23.1046 10 22 10C20.8954 10 20 10.8954 20 12C20 13.1046 20.8954 14 22 14Z"
+                            fill="#666666"
+                        />
+                        <path
+                            d="M23 20C24.1046 20 25 19.1046 25 18C25 16.8954 24.1046 16 23 16C21.8954 16 21 16.8954 21 18C21 19.1046 21.8954 20 23 20Z"
+                            fill="#666666"
+                        />
+                        <path
+                            d="M19 25C20.1046 25 21 24.1046 21 23C21 21.8954 20.1046 21 19 21C17.8954 21 17 21.8954 17 23C17 24.1046 17.8954 25 19 25Z"
+                            fill="#666666"
+                        />
+                        <path
+                            d="M16.54 1.99992C14.6566 1.92722 12.7778 2.23558 11.0165 2.90653C9.25507 3.57747 7.64731 4.59717 6.28955 5.90451C4.93179 7.21184 3.852 8.77988 3.11491 10.5146C2.37781 12.2494 1.9986 14.1151 2 15.9999C1.99995 16.7412 2.1709 17.4726 2.49955 18.1371C2.8282 18.8016 3.30569 19.3813 3.8949 19.8312C4.4841 20.2811 5.16914 20.589 5.89674 20.731C6.62433 20.873 7.37488 20.8452 8.09 20.6499L9.21 20.3399C9.65555 20.2183 10.1232 20.2012 10.5764 20.2899C11.0296 20.3787 11.4563 20.5708 11.8231 20.8515C12.1898 21.1322 12.4869 21.4937 12.691 21.908C12.8952 22.3223 13.0009 22.7781 13 23.2399V26.9999C13 27.7956 13.3161 28.5586 13.8787 29.1212C14.4413 29.6838 15.2044 29.9999 16 29.9999C17.8848 30.0013 19.7506 29.6221 21.4853 28.885C23.22 28.1479 24.7881 27.0681 26.0954 25.7104C27.4028 24.3526 28.4225 22.7449 29.0934 20.9835C29.7643 19.2221 30.0727 17.3434 30 15.4599C29.8549 11.9366 28.3902 8.59665 25.8968 6.10317C23.4033 3.60969 20.0633 2.14501 16.54 1.99992ZM24.65 24.3099C23.5334 25.479 22.1909 26.4089 20.7039 27.0432C19.217 27.6775 17.6166 28.003 16 27.9999C15.7348 27.9999 15.4804 27.8946 15.2929 27.707C15.1054 27.5195 15 27.2651 15 26.9999V23.2399C15 21.9138 14.4732 20.6421 13.5355 19.7044C12.5979 18.7667 11.3261 18.2399 10 18.2399C9.55065 18.2407 9.1034 18.3012 8.67 18.4199L7.55 18.7299C7.13168 18.842 6.69316 18.8563 6.26844 18.7716C5.84373 18.6869 5.44422 18.5055 5.10092 18.2415C4.75761 17.9775 4.47972 17.6379 4.2888 17.2492C4.09788 16.8605 3.99906 16.433 4 15.9999C3.99876 14.3837 4.32402 12.7839 4.95625 11.2965C5.58848 9.80909 6.51467 8.46472 7.67923 7.34405C8.8438 6.22338 10.2227 5.3495 11.7333 4.77485C13.2439 4.2002 14.855 3.93662 16.47 3.99992C19.4772 4.15654 22.3198 5.42159 24.4491 7.55087C26.5783 9.68016 27.8434 12.5227 28 15.5299C28.0688 17.1459 27.8072 18.7589 27.2312 20.2703C26.6552 21.7817 25.7769 23.1597 24.65 24.3199V24.3099Z"
+                            fill="#666666"
+                        />
+                    </svg>
+                </div>
+                <div class="px-5">
+                    <h2 class="flex flex-row text-2xl">
+                        {{ __('benefits.identity.heading') }}
+                    </h2>
+                    <h3 class="font-urbanist text-6xl font-extralight text-black">75 %</h3>
+                    <p class="mb-8 mt-2 text-lg text-gray-60">
+                        {{ __('benefits.identity.subheading') }}
+                    </p>
+                    <x-spoiler :content="__('benefits.identity.content')" />
+                </div>
+            </div>
+            <div class="mt-16 flex md:mt-20 md:w-8/12">
+                <div class="h-6 w-6 md:pl-0">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M18.303 10C17.9473 10 17.5952 10.0713 17.2675 10.2097C16.9398 10.3481 16.6431 10.5508 16.3951 10.8058L16.0019 11.2112L15.6049 10.8058C15.3569 10.5508 15.0603 10.3481 14.7326 10.2097C14.4049 10.0713 14.0528 10 13.6971 10C13.3413 10 12.9892 10.0713 12.6615 10.2097C12.3338 10.3481 12.0372 10.5508 11.7892 10.8058C11.283 11.328 11 12.0267 11 12.754C11 13.4813 11.283 14.18 11.7892 14.7022L16.0019 19L20.2108 14.7022C20.717 14.18 21 13.4813 21 12.754C21 12.0267 20.717 11.328 20.2108 10.8058C19.9628 10.5508 19.6662 10.3481 19.3385 10.2097C19.0108 10.0713 18.6587 10 18.303 10Z"
+                            fill="#666666"
+                        />
+                        <path
+                            d="M17.7358 30L16 29L20 22H26C26.2628 22.0004 26.523 21.949 26.7659 21.8487C27.0087 21.7483 27.2294 21.601 27.4152 21.4152C27.601 21.2294 27.7483 21.0087 27.8487 20.7659C27.949 20.523 28.0004 20.2628 28 20V8C28.0004 7.73723 27.949 7.47696 27.8487 7.2341C27.7483 6.99125 27.601 6.77059 27.4152 6.58479C27.2294 6.39898 27.0087 6.25168 26.7659 6.15133C26.523 6.05098 26.2628 5.99955 26 6H6C5.73723 5.99955 5.47696 6.05098 5.2341 6.15133C4.99125 6.25168 4.77059 6.39898 4.58479 6.58479C4.39898 6.77059 4.25168 6.99125 4.15133 7.2341C4.05098 7.47696 3.99955 7.73723 4 8V20C3.99955 20.2628 4.05098 20.523 4.15133 20.7659C4.25168 21.0087 4.39898 21.2294 4.58479 21.4152C4.77059 21.601 4.99125 21.7483 5.2341 21.8487C5.47696 21.949 5.73723 22.0004 6 22H15V24H6C5.47469 24.0001 4.9545 23.8967 4.46916 23.6957C3.98381 23.4947 3.54282 23.2001 3.17137 22.8286C2.79992 22.4572 2.50528 22.0162 2.30429 21.5308C2.10331 21.0455 1.99991 20.5253 2 20V8C1.99984 7.47467 2.1032 6.95445 2.30416 6.46908C2.50512 5.98371 2.79976 5.54269 3.17122 5.17122C3.54269 4.79976 3.98371 4.50512 4.46908 4.30416C4.95445 4.1032 5.47467 3.99984 6 4H26C26.5253 3.99984 27.0455 4.1032 27.5309 4.30416C28.0163 4.50512 28.4573 4.79976 28.8288 5.17122C29.2002 5.54269 29.4949 5.98371 29.6958 6.46908C29.8968 6.95445 30.0002 7.47467 30 8V20C30.0001 20.5253 29.8967 21.0455 29.6957 21.5308C29.4947 22.0162 29.2001 22.4572 28.8286 22.8286C28.4572 23.2001 28.0162 23.4947 27.5308 23.6957C27.0455 23.8967 26.5253 24.0001 26 24H21.1646L17.7358 30Z"
+                            fill="#666666"
+                        />
+                    </svg>
+                </div>
+                <div class="px-5">
+                    <h2 class="flex flex-row text-2xl">
+                        {{ __('benefits.csr.heading') }}
+                    </h2>
+                    <x-spoiler :content="__('benefits.csr.content')" />
+                </div>
+            </div>
+            <img
+                src="{{ asset('img/benefits_2.jpg') }}"
+                alt="{{ config('app.name') }} - benefit identity"
+                class="mt-16 md:mt-20"
+            />
+        </div>
+    </section>
+    <section class="scroll-mt-[520px] bg-black py-4 text-white md:py-16" id="benefits-of-renting">
+        <div>
+            <h2 class="mb-3 text-center text-5xl font-medium md:mb-0">
+                {{ __('rentingArt.heading') }}
+            </h2>
+            <div class="container mx-auto md:grid md:w-9/12 md:grid-cols-3 md:pt-24">
+                <div class="py-3 md:w-10/12">
+                    <h3 class="pb-8 text-3xl">
+                        {{ __('rentingArt.section1.heading') }}
+                    </h3>
+                    <p>
+                        {{ __('rentingArt.section1.text') }}
+                    </p>
+                </div>
+                <div class="py-3 md:w-10/12">
+                    <h3 class="pb-8 text-3xl">
+                        {{ __('rentingArt.section2.heading') }}
+                    </h3>
+                    <p>
+                        {{ __('rentingArt.section2.text') }}
+                    </p>
+                </div>
+                <div class="py-3 md:w-10/12">
+                    <h3 class="pb-8 text-3xl">
+                        {{ __('rentingArt.section3.heading') }}
+                    </h3>
+                    <p>
+                        {{ __('rentingArt.section3.text') }}
+                    </p>
                 </div>
             </div>
         </div>
-    </body>
-</html>
+    </section>
+    <section class="scroll-mt-[520px] bg-white py-4 text-black md:py-16" id="how">
+        <div>
+            <h2 class="text-center text-5xl font-medium">
+                {{ __('how.heading') }}
+            </h2>
+            <div class="container mx-auto justify-between md:grid md:grid-cols-4 md:pt-24">
+                <div class="md:px-1">
+                    <span class="flex pb-8 font-urbanist text-8xl font-thin">
+                        01
+                        <span class="hidden md:flex md:justify-items-center md:align-middle">
+                            <svg
+                                class="md:w-100 ml-10 w-[155px] md:w-[188px]"
+                                viewBox="0 0 188 9"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M0.5 7.5C0.5 7.5 36 1.5 94 1.5C152 1.5 187.5 7.5 187.5 7.5"
+                                    stroke="#CCCCCC"
+                                    strokeWidth="2"
+                                />
+                            </svg>
+                        </span>
+                    </span>
+                    <h3 class="md:pr-16l pb-8 text-3xl font-medium">
+                        {{ __('how.section1.heading') }}
+                    </h3>
+                    <p class="md:pr-20">
+                        {{ __('how.section1.text') }}
+                    </p>
+                </div>
+                <div class="md:px-1">
+                    <span class="flex pb-8 font-urbanist text-8xl font-thin">
+                        02
+                        <span class="hidden md:flex md:justify-items-center md:align-middle">
+                            <svg
+                                class="md:w-100 ml-10 w-[155px] rotate-180 md:w-[188px]"
+                                viewBox="0 0 188 9"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M0.5 7.5C0.5 7.5 36 1.5 94 1.5C152 1.5 187.5 7.5 187.5 7.5"
+                                    stroke="#CCCCCC"
+                                    strokeWidth="2"
+                                />
+                            </svg>
+                        </span>
+                    </span>
+                    <h3 class="md:pr-16l pb-8 text-3xl font-medium">
+                        {{ __('how.section2.heading') }}
+                    </h3>
+                    <p class="md:pr-20">
+                        {{ __('how.section2.text') }}
+                    </p>
+                </div>
+                <div class="md:px-1">
+                    <span class="flex pb-8 font-urbanist text-8xl font-thin">
+                        03
+                        <span class="hidden md:flex md:justify-items-center md:align-middle">
+                            <svg
+                                class="md:w-100 ml-10 w-[155px] md:w-[188px]"
+                                viewBox="0 0 188 9"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M0.5 7.5C0.5 7.5 36 1.5 94 1.5C152 1.5 187.5 7.5 187.5 7.5"
+                                    stroke="#CCCCCC"
+                                    strokeWidth="2"
+                                />
+                            </svg>
+                        </span>
+                    </span>
+                    <h3 class="md:pr-16l pb-8 text-3xl font-medium">
+                        {{ __('how.section3.heading') }}
+                    </h3>
+                    <p class="md:pr-20">
+                        {{ __('how.section3.text') }}
+                    </p>
+                </div>
+                <div class="md:px-1">
+                    <span class="flex pb-8 font-urbanist text-8xl font-thin">04</span>
+                    <h3 class="md:pr-16l pb-8 text-3xl font-medium">
+                        {{ __('how.section4.heading') }}
+                    </h3>
+                    <p class="md:pr-20">
+                        {{ __('how.section4.text') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="scroll-mt-[520px] bg-white py-4 text-black md:py-16" id="latest">
+        <div class="container mx-auto">
+            <h2 class="py-6 text-5xl font-medium">
+                {{ __('artworks.heading') }}
+            </h2>
+            <livewire:carousel :items="Product::with('images')->get()->toArray()" />
+        </div>
+    </section>
+    <div id="about" class="scroll-mt-[520px]">
+        <section class="bg-white py-4 pt-0 text-black md:py-16">
+            <div class="container mx-auto md:grid md:grid-cols-3">
+                <div class="py-3 md:px-1">
+                    <h3 class="pb-3 text-3xl font-medium md:pr-16">
+                        {{ __('about.section1.heading') }}
+                    </h3>
+                    <p class="whitespace-pre-line md:pr-20">
+                        {{ __('about.section1.text') }}
+                    </p>
+                </div>
+                <div class="py-3 md:px-1">
+                    <h3 class="pb-3 text-3xl font-medium md:pr-16">
+                        {{ __('about.section2.heading') }}
+                    </h3>
+                    <p class="whitespace-pre-line md:pr-20">
+                        {{ __('about.section2.text') }}
+                    </p>
+                </div>
+                <div class="py-3 md:px-1">
+                    <h3 class="pb-3 text-3xl font-medium md:pr-16">
+                        {{ __('about.section3.heading') }}
+                    </h3>
+                    <div>
+                        <div class="my-16">
+                            <a
+                                target="_blank"
+                                href="https://www.capexus.cz/udalosti/sila-umeni-v-modernim-pracovnim-prostredi"
+                            >
+                                <img src="{{ asset('img/capexus.png') }}" alt="{{ config('app.name') }} - capexus" />
+                            </a>
+                        </div>
+                        <div class="my-16">
+                            <a
+                                target="_blank"
+                                href="https://www.kesselbauer.sk/sk/novinky/atrium-projektu-kesselbauer-ozivi-originalne-umelecke-dielo"
+                            >
+                                <img
+                                    src="{{ asset('img/proxenta.png') }}"
+                                    alt="{{ config('app.name') }} - proxenta"
+                                />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="bg-white py-4 pt-0 text-black md:py-16">
+            <h2 class="text-center text-5xl font-medium">
+                {{ __('media.heading') }}
+            </h2>
+            <div class="container mx-auto">
+                <div class="flex flex-row flex-wrap justify-around">
+                    @foreach ($mediaCards as $mediaCard)
+                        <div class="max-w-sm py-5">
+                            <div
+                                class="min-w-sm border-gray-200 dark:border-gray-700 dark:bg-gray-800 max-w-sm rounded-lg border bg-white shadow"
+                            >
+                                <a target="_blank" href="{{ $mediaCard['link'] }}">
+                                    <img
+                                        src="{{ $mediaCard['image'] }}"
+                                        alt="{{ $mediaCard['name'] }}"
+                                        class="h-[300px] w-full rounded-t-lg object-cover object-top"
+                                    />
+                                </a>
+                                <div class="p-5">
+                                    <div class="h-36">
+                                        <h5 class="text-gray-900 mb-2 text-2xl font-medium dark:text-white">
+                                            {{ $mediaCard['name'] }}
+                                        </h5>
+                                    </div>
+                                    <div class="pb-5">
+                                        <x-link-button
+                                            target="_blank"
+                                            href="{{ $mediaCard['link'] }}"
+                                            class="border border-black bg-white text-black hover:bg-black hover:text-white"
+                                        >
+                                            {{ __('other.readMore') }}
+                                        </x-link-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        <section class="bg-white py-4 pt-0 text-black md:py-16">
+            <h2 class="text-center text-5xl font-medium">
+                {{ __('blog.heading') }}
+            </h2>
+            <div class="container mx-auto">
+                <div class="flex flex-row flex-wrap justify-around">
+                    @foreach (Post::with(['images', 'coverImage'])->get() as $post)
+                        <div class="max-w-sm py-5">
+                            <div
+                                class="min-w-sm border-gray-200 dark:border-gray-700 dark:bg-gray-800 max-w-sm rounded-lg border bg-white shadow"
+                            >
+                                <a target="_blank" href="{{ route('blog.post', $post->id) }}">
+                                    <img
+                                        src="{{ $post->thumbnail->url }}"
+                                        alt="{{ $post->title }}"
+                                        class="h-[300px] w-full rounded-t-lg object-cover object-top"
+                                    />
+                                </a>
+                                <div class="p-5">
+                                    <div class="h-36">
+                                        <h5 class="text-gray-900 mb-2 text-2xl font-medium dark:text-white">
+                                            {{ $post->title }}
+                                        </h5>
+                                    </div>
+                                    <div class="pb-5">
+                                        <x-link-button
+                                            target="_blank"
+                                            href="{{ route('blog.post', ['id' => $post->id]) }}"
+                                            class="border border-black bg-white text-black hover:bg-black hover:text-white"
+                                        >
+                                            {{ __('other.readMore') }}
+                                        </x-link-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    </div>
+</x-app-layout>

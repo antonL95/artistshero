@@ -1,10 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Models\Artist;
+use App\Models\Filter;
+use App\Models\Images;
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -12,73 +20,86 @@ return new class extends Migration {
     {
         Schema::create('artists', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->index();
-            $table->text('bio');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by')->nullable();
-            $table->string('locale', 2)->index();
+            $table->json('name');
+            $table->json('bio');
+            $table->foreignIdFor(User::class, 'created_by');
+            $table->foreignIdFor(User::class, 'updated_by')->nullable();
+            $table->foreignIdFor(Images::class, 'profile_image_id');
+            $table->foreignIdFor(Images::class, 'cover_image_id');
+            $table->json('other_image_ids')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
+        });
+
+        Schema::create('artist_images', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Artist::class, 'artist_id');
+            $table->foreignIdFor(Images::class, 'media_id');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
         });
 
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->index();
-            $table->text('description');
-            $table->unsignedBigInteger('artist_id');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by')->nullable();
-            $table->string('locale', 2)->index();
+            $table->json('name');
+            $table->json('description');
+            $table->foreignIdFor(Artist::class, 'artist_id');
+            $table->foreignIdFor(User::class, 'created_by');
+            $table->foreignIdFor(User::class, 'updated_by')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
-            $table->foreign('artist_id')->references('id')->on('artists')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
+        });
+
+        Schema::create('product_images', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Product::class, 'product_id');
+            $table->foreignIdFor(Images::class, 'media_id');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
         });
 
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->index();
-            $table->string('subtitle')->nullable();
-            $table->text('content');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by')->nullable();
-            $table->string('locale', 2)->index();
+            $table->json('title');
+            $table->json('subtitle')->nullable();
+            $table->json('content');
+            $table->foreignIdFor(User::class, 'created_by');
+            $table->foreignIdFor(User::class, 'updated_by')->nullable();
+            $table->foreignIdFor(Images::class, 'cover_image_id');
+            $table->foreignIdFor(Images::class, 'thumbnail_image_id');
             $table->timestamp('published_at')->nullable();
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
+        });
+
+        Schema::create('post_images', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Product::class, 'post_id');
+            $table->foreignIdFor(Images::class, 'media_id');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
         });
 
         Schema::create('filters', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->index();
-            $table->string('type')->index();
-            $table->string('locale', 2)->index();
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->json('name');
+            $table->json('type');
+            $table->foreignIdFor(User::class, 'created_by');
+            $table->foreignIdFor(User::class, 'updated_by')->nullable();
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
         });
 
         Schema::create('product_filter', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('filter_id');
+            $table->foreignIdFor(Product::class, 'product_id');
+            $table->foreignIdFor(Filter::class, 'filter_id');
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('filter_id')->references('id')->on('filters')->onDelete('cascade');
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
         });
     }
-
 
     /**
      * Reverse the migrations.

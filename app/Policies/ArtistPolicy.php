@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Artist;
@@ -15,26 +17,22 @@ class ArtistPolicy
         return true; // $user->hasPermissionTo('view artists');
     }
 
-
     public function view(User $user, Artist $artist): bool
     {
         return true; // $user->hasPermissionTo('view artists')
         //     || $user->id === $artist->createdBy->id;
     }
 
-
     public function create(User $user): bool
     {
         return true; // $user->hasPermissionTo('create artists');
     }
-
 
     public function update(User $user, Artist $artist): bool
     {
         return true; // $user->hasPermissionTo('update artists')
         //     || $user->id === $artist->createdBy->id;
     }
-
 
     public function delete(User $user, Artist $artist): bool
     {

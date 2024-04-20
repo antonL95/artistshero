@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use TallStackUi\Facades\TallStackUi;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,5 +24,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
+        TallStackUi::personalize()->modal()
+            ->block('wrapper.fourth', 'dark:bg-dark-700 relative flex w-full transform flex-col bg-white text-left shadow-xl transition-all')
+            ->block('body', 'dark:text-dark-300 grow py-5 text-gray-700 px-4');
     }
 }

@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
 use App\Models\Post;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
@@ -16,46 +17,37 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class PostResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Post::class;
 
     protected static ?string $slug = 'posts';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Placeholder::make('created_at')
-                    ->label('Created Date')
-                    ->content(fn (?Post $record): string => $record?->created_at?->diffForHumans() ?? '-'),
-
-                Placeholder::make('updated_at')
-                    ->label('Last Modified Date')
-                    ->content(fn (?Post $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
-
                 TextInput::make('title')
                     ->required(),
 
                 TextInput::make('subtitle'),
 
-                MarkdownEditor::make('content')
-                    ->required(),
-
-                TextInput::make('locale')
+                TiptapEditor::make('content')
+                    ->profile('simple')
                     ->required(),
 
                 DatePicker::make('published_at')
                     ->label('Published Date'),
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
@@ -66,8 +58,6 @@ class PostResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('subtitle'),
-
-                TextColumn::make('locale'),
 
                 TextColumn::make('published_at')
                     ->label('Published Date')
@@ -87,7 +77,6 @@ class PostResource extends Resource
             ]);
     }
 
-
     public static function getPages(): array
     {
         return [
@@ -97,29 +86,28 @@ class PostResource extends Resource
         ];
     }
 
-
+    /**
+     * @return Builder<Post>
+     */
     public static function getGlobalSearchEloquentQuery(): Builder
     {
         return parent::getGlobalSearchEloquentQuery()->with(['createdBy', 'updateBy']);
     }
-
 
     public static function getGloballySearchableAttributes(): array
     {
         return ['title', 'createdBy.name', 'updateBy.name'];
     }
 
-
+    /**
+     * @param Post $record
+     */
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         $details = [];
 
         if ($record->createdBy) {
             $details['CreatedBy'] = $record->createdBy->name;
-        }
-
-        if ($record->updateBy) {
-            $details['UpdateBy'] = $record->updateBy->name;
         }
 
         return $details;

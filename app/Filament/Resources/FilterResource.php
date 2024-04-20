@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FilterResource\Pages;
 use App\Models\Filter;
-use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
@@ -19,36 +22,27 @@ use Illuminate\Database\Eloquent\Model;
 
 class FilterResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Filter::class;
 
     protected static ?string $slug = 'filters';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Placeholder::make('created_at')
-                    ->label('Created Date')
-                    ->content(fn (?Filter $record): string => $record?->created_at?->diffForHumans() ?? '-'),
-
-                Placeholder::make('updated_at')
-                    ->label('Last Modified Date')
-                    ->content(fn (?Filter $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
-
                 TextInput::make('name')
                     ->required(),
 
                 TextInput::make('type')
                     ->required(),
 
-                TextInput::make('locale')
-                    ->required(),
+                Hidden::make('created_by')->default(auth()->id()),
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
@@ -57,13 +51,10 @@ class FilterResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-
                 TextColumn::make('type'),
-
-                TextColumn::make('locale'),
             ])
             ->filters([
-                //
+
             ])
             ->actions([
                 EditAction::make(),
@@ -76,7 +67,6 @@ class FilterResource extends Resource
             ]);
     }
 
-
     public static function getPages(): array
     {
         return [
@@ -86,22 +76,26 @@ class FilterResource extends Resource
         ];
     }
 
-
+    /**
+     * @return Builder<Filter>
+     */
     public static function getGlobalSearchEloquentQuery(): Builder
     {
         return parent::getGlobalSearchEloquentQuery()->with(['createdBy', 'updatedBy']);
     }
-
 
     public static function getGloballySearchableAttributes(): array
     {
         return ['name', 'createdBy.name', 'updatedBy.name'];
     }
 
-
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         $details = [];
+
+        if (!$record instanceof Filter) {
+            return $details;
+        }
 
         if ($record->createdBy) {
             $details['CreatedBy'] = $record->createdBy->name;

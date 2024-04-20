@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -72,6 +74,10 @@ return [
 
         'array' => [
             'transport' => 'array',
+        ],
+
+        'resend' => [
+            'transport' => 'resend',
         ],
 
         'failover' => [
