@@ -103,8 +103,6 @@ jobs:
           port: ${{ matrix.server.port }}
           envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH,ENV_SECRET
           script: |
-            echo "$RELEASE_PATH"
-            echo "$USER"
             cd $RELEASE_PATH && git clone git@github.com:antonL95/artistshero-laravel.git ./
             cd $RELEASE_PATH && composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
             cd $RELEASE_PATH && source $BASE_PATH/../.nvm/nvm.sh && npm install --no-progress && npm run build
