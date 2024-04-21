@@ -27,25 +27,22 @@ class ContactForm extends Component
     #[Rule(['required', 'min:10'])]
     public string $message = '';
 
-
     public function sendMessage(): void
     {
         $data = $this->validate();
 
         Mail::to('info@artistshero.com')->send(
-            new ContactFormMail(
+            (new ContactFormMail(
                 $data['email'],
                 $data['name'],
-                $data['subject'],
                 $data['message'],
-            ),
+            ))->subject($data['subject']),
         );
 
         $this->toast()->success('Email sent!', 'Email sent successfully')->send();
 
         $this->reset();
     }
-
 
     public function render(): View
     {
