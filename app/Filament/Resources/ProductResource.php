@@ -72,7 +72,7 @@ class ProductResource extends Resource
                     ->sortable(),
                 CuratorColumn::make('images')
                     ->circular()
-                    ->size(40)
+                    ->size(40),
             ])
             ->filters([
                 //

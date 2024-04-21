@@ -55,7 +55,6 @@ class User extends Authenticatable implements FilamentUser
         return Str::contains($this->email, '@artistshero.com');
     }
 
-
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->isAdmin(); // ToDo: implement permissions

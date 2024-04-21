@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Resources\ProductResource\Pages;
 
 use App\Filament\Resources\ProductResource;
-use App\Models\Post;
 use App\Models\Product;
 use Filament\Actions\CreateAction;
 use Filament\Actions\LocaleSwitcher;
@@ -18,8 +17,6 @@ class ListProducts extends ListRecords
 
     protected static string $resource = ProductResource::class;
 
-
-
     /**
      * @return Builder<Product>|null
      */
@@ -27,6 +24,7 @@ class ListProducts extends ListRecords
     {
         return parent::getTableQuery()?->with(['images']);
     }
+
     protected function getHeaderActions(): array
     {
         return [

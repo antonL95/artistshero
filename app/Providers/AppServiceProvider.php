@@ -20,15 +20,12 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
     {
-        Gate::define('viewPulse', static function (User $user) {
-            return $user->isAdmin();
-        });
+        Gate::define('viewPulse', static fn (User $user) => $user->isAdmin());
 
         Model::unguard();
         TallStackUi::personalize()->modal()

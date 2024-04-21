@@ -17,7 +17,6 @@ class ListPosts extends ListRecords
 
     protected static string $resource = PostResource::class;
 
-
     /**
      * @return Builder<Post>|null
      */
