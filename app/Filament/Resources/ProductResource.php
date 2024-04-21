@@ -7,6 +7,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers\FiltersRelationManager;
 use App\Models\Product;
+use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -69,6 +70,9 @@ class ProductResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
+                CuratorColumn::make('images')
+                    ->circular()
+                    ->size(40)
             ])
             ->filters([
                 //

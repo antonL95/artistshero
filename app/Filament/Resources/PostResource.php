@@ -6,6 +6,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
 use App\Models\Post;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
+use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -42,9 +44,23 @@ class PostResource extends Resource
                 TextInput::make('subtitle'),
 
                 TiptapEditor::make('content')
+                    ->columnSpanFull()
                     ->output(TiptapOutput::Html)
                     ->profile('simple')
                     ->required(),
+
+                CuratorPicker::make('thumbnail_image_id')
+                    ->size('sm')
+                    ->relationship('thumbnail', 'id')
+                    ->required(),
+
+                CuratorPicker::make('cover_image_id')
+                    ->relationship('coverImage', 'id')
+                    ->required(),
+
+                CuratorPicker::make('image_ids')
+                    ->multiple()
+                    ->relationship('images', 'id'),
 
                 DatePicker::make('published_at')
                     ->label('Published Date'),
@@ -55,6 +71,10 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
+                CuratorColumn::make('thumbnail')
+                    ->size(40)
+                    ->circular(),
+
                 TextColumn::make('title')
                     ->searchable()
                     ->sortable(),
@@ -64,6 +84,12 @@ class PostResource extends Resource
                 TextColumn::make('published_at')
                     ->label('Published Date')
                     ->date(),
+                CuratorColumn::make('coverImage')
+                    ->size(40)
+                    ->circular(),
+                CuratorColumn::make('images')
+                    ->size(40)
+                    ->circular(),
             ])
             ->filters([
                 //

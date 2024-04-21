@@ -72,9 +72,6 @@ class ArtistResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('bio')
-                    ->searchable()
-                    ->wrap(),
                 CuratorColumn::make('coverImage')
                     ->size(40)
                     ->circular(),
