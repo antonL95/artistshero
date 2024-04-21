@@ -17,6 +17,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use FilamentTiptapEditor\Enums\TiptapOutput;
 use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -41,6 +42,7 @@ class PostResource extends Resource
                 TextInput::make('subtitle'),
 
                 TiptapEditor::make('content')
+                    ->output(TiptapOutput::Html)
                     ->profile('simple')
                     ->required(),
 

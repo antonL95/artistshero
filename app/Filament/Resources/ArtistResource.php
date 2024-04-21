@@ -41,7 +41,7 @@ class ArtistResource extends Resource
 
                 TiptapEditor::make('bio')
                     ->columnSpanFull()
-                    ->output(TiptapOutput::Text)
+                    ->output(TiptapOutput::Html)
                     ->profile('simple')
                     ->required(),
 

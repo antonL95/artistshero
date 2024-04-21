@@ -19,6 +19,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use FilamentTiptapEditor\Enums\TiptapOutput;
 use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -42,6 +43,7 @@ class ProductResource extends Resource
 
                 TiptapEditor::make('description')
                     ->profile('simple')
+                    ->output(TiptapOutput::Html)
                     ->columnSpanFull()
                     ->required(),
 
