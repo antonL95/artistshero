@@ -118,5 +118,6 @@ jobs:
             /usr/bin/php $RELEASE_PATH/artisan config:clear
             /usr/bin/php $RELEASE_PATH/artisan route:cache
             /usr/bin/php $RELEASE_PATH/artisan event:cache
-            sudo supervisorctl reload
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
+            sudo supervisorctl reload
+            sudo systemctl restart php8.3-fpm
