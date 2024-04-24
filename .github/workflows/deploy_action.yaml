@@ -108,7 +108,6 @@ jobs:
             cd $RELEASE_PATH && source $BASE_PATH/../.nvm/nvm.sh && npm install --no-progress && npm run build
             rm -rf $RELEASE_PATH/storage
             ln -s -f $STORAGE_PATH $RELEASE_PATH
-            ln -s -f ${BASE_PATH}/frankenphp $RELEASE_PATH
             /usr/bin/php $RELEASE_PATH/artisan env:decrypt --key=$ENV_SECRET --env=production
             mv $RELEASE_PATH/.env.production $RELEASE_PATH/.env
             /usr/bin/php $RELEASE_PATH/artisan migrate --force
