@@ -46,7 +46,7 @@ class PostResource extends Resource
                 TiptapEditor::make('content')
                     ->columnSpanFull()
                     ->output(TiptapOutput::Html)
-                    ->profile('simple')
+                    ->profile('default')
                     ->required(),
 
                 CuratorPicker::make('thumbnail_image_id')
