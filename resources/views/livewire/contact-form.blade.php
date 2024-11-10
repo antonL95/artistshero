@@ -1,4 +1,4 @@
-<div class="flex flex-col justify-between">
+<div class="flex flex-col justify-between w-full">
     <h2 class="font-urbanist text-center text-4xl">
         {{ __('contact.heading') }}
     </h2>
