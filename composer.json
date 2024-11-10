@@ -45,6 +45,7 @@
         "pestphp/pest-plugin-laravel": "^2.0",
         "pestphp/pest-plugin-type-coverage": "^2.8",
         "roave/security-advisories": "dev-latest",
+        "spatie/laravel-cronless-schedule": "^1.2",
         "spatie/laravel-ignition": "^2.4"
     },
     "autoload": {
