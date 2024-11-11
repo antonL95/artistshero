@@ -23,7 +23,7 @@ return new class extends PulseMigration
             $table->string('type');
             $table->mediumText('key');
             match ($this->driver()) {
-                'mysql' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
+                'mysql', 'mariadb' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
                 'pgsql' => $table->uuid('key_hash')->storedAs('md5("key")::uuid'),
                 'sqlite' => $table->string('key_hash'),
             };
@@ -40,7 +40,7 @@ return new class extends PulseMigration
             $table->string('type');
             $table->mediumText('key');
             match ($this->driver()) {
-                'mysql' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
+                'mysql', 'mariadb' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
                 'pgsql' => $table->uuid('key_hash')->storedAs('md5("key")::uuid'),
                 'sqlite' => $table->string('key_hash'),
             };
@@ -59,7 +59,7 @@ return new class extends PulseMigration
             $table->string('type');
             $table->mediumText('key');
             match ($this->driver()) {
-                'mysql' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
+                'mysql', 'mariadb' => $table->char('key_hash', 16)->charset('binary')->virtualAs('unhex(md5(`key`))'),
                 'pgsql' => $table->uuid('key_hash')->storedAs('md5("key")::uuid'),
                 'sqlite' => $table->string('key_hash'),
             };
