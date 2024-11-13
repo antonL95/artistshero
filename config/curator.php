@@ -13,6 +13,7 @@ return [
         'application/pdf',
     ],
     'cloud_disks' => [
+        'digital_ocean',
         'r2',
         's3',
         'cloudinary',
