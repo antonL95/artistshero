@@ -8,11 +8,11 @@
     }"
 >
     <article
-        x-collapse.min.240px
+        x-collapse.min.195px
         x-show="expanded"
-        class="mt-4 grid grid-cols-1 justify-items-center self-center overflow-y-hidden whitespace-pre-line"
+        class="mt-4 overflow-y-hidden whitespace-pre-line"
     >
-        {{ $content }}
+        {!! $content !!}
     </article>
     <button x-on:click="toggle()">
         <x-icon name="plus" class="mx-auto h-6 w-6" x-bind:class="{'hidden': expanded}" />

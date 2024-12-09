@@ -17,7 +17,7 @@
                     {{ __('hero.title') }}
                 </h1>
                 <h3 class="text-xl">
-                    <div class="relative inline-block h-[33px] w-[155px] md:w-[226px]">
+                    <div class="relative inline-block h-[33px] w-[226px]">
                         <span class="absolute animate-topToBottom opacity-0">
                             {{ __('hero.subtitle1') }}
                         </span>
@@ -49,7 +49,7 @@
                 </h3>
             </section>
             <section class="md:hidden">
-                <img src="{{ asset('img/hero_section.jpg') }}" alt="{{ config('app.name') }}" />
+                <img src="{{ asset('img/hero_section.jpg') }}" alt="{{ config('app.name') }}"/>
             </section>
         </div>
     </section>
@@ -64,9 +64,9 @@
                 class="mt-4 md:mt-20 md:self-center"
             />
             <article class="hidden whitespace-pre-line md:mt-16 md:block md:w-9/12">
-                {{ __('why.content') }}
+                {!! __('why.content') !!}
             </article>
-            <x-spoiler :content="__('why.content')" class="md:hidden" />
+            <x-spoiler :content="__('why.content')" class="md:hidden"/>
         </div>
     </section>
     <section class="scroll-mt-[520px] bg-white py-4 text-black md:py-16" id="benefits">
@@ -86,9 +86,13 @@
                     </h2>
                     <h3 class="font-urbanist text-6xl font-extralight text-black">61 %</h3>
                     <p class="mb-8 mt-2 text-lg text-gray-60">
-                        {{ __('benefits.creativity.subheading') }}
+                        {!! __('benefits.creativity.subheading') !!}
                     </p>
-                    <x-spoiler :content="__('benefits.creativity.content')" />
+                    <article
+                        class="mt-4 overflow-y-hidden whitespace-pre-line max-md:hidden">
+                        {!! __('benefits.creativity.content') !!}
+                    </article>
+                    <x-spoiler :content="__('benefits.creativity.content')" class="md:hidden"/>
                 </div>
             </div>
             <div class="mt-16 flex md:mt-20 md:w-8/12">
@@ -106,9 +110,13 @@
                     </h2>
                     <h3 class="font-urbanist text-6xl font-extralight text-black">94 %</h3>
                     <p class="mb-8 mt-2 text-lg text-gray-60">
-                        {{ __('benefits.creativity.subheading') }}
+                        {!! __('benefits.wellbeing.subheading') !!}
                     </p>
-                    <x-spoiler :content="__('benefits.wellbeing.content')" />
+                    <article
+                        class="mt-4 overflow-y-hidden whitespace-pre-line max-md:hidden">
+                        {!! __('benefits.wellbeing.content') !!}
+                    </article>
+                    <x-spoiler :content="__('benefits.wellbeing.content')" class="md:hidden"/>
                 </div>
             </div>
             <img
@@ -151,9 +159,13 @@
                     </h2>
                     <h3 class="font-urbanist text-6xl font-extralight text-black">75 %</h3>
                     <p class="mb-8 mt-2 text-lg text-gray-60">
-                        {{ __('benefits.identity.subheading') }}
+                        {!! __('benefits.identity.subheading') !!}
                     </p>
-                    <x-spoiler :content="__('benefits.identity.content')" />
+                    <article
+                        class="mt-4 overflow-y-hidden whitespace-pre-line max-md:hidden">
+                        {!! __('benefits.identity.content') !!}
+                    </article>
+                    <x-spoiler :content="__('benefits.identity.content')" class="md:hidden"/>
                 </div>
             </div>
             <div class="mt-16 flex md:mt-20 md:w-8/12">
@@ -173,7 +185,11 @@
                     <h2 class="flex flex-row text-2xl">
                         {{ __('benefits.csr.heading') }}
                     </h2>
-                    <x-spoiler :content="__('benefits.csr.content')" />
+                    <article
+                        class="mt-4 overflow-y-hidden whitespace-pre-line max-md:hidden">
+                        {!! __('benefits.csr.content') !!}
+                    </article>
+                    <x-spoiler :content="__('benefits.csr.content')" class="md:hidden"/>
                 </div>
             </div>
             <img
@@ -314,12 +330,12 @@
             <h2 class="py-6 text-5xl font-medium">
                 {{ __('artworks.heading') }}
             </h2>
-            <livewire:carousel :items="Product::with('images')->get()->toArray()" />
+            <livewire:carousel :items="Product::with('images')->get()->toArray()"/>
         </div>
     </section>
     <div id="about" class="scroll-mt-[520px]">
         <section class="bg-white py-4 pt-0 text-black md:py-16">
-            <div class="container mx-auto md:grid md:grid-cols-3">
+            <div class="container mx-auto md:grid md:grid-cols-2">
                 <div class="py-3 md:px-1">
                     <h3 class="pb-3 text-3xl font-medium md:pr-16">
                         {{ __('about.section1.heading') }}
@@ -336,29 +352,25 @@
                         {{ __('about.section2.text') }}
                     </p>
                 </div>
-                <div class="py-3 md:px-1">
+                <div class="py-3 md:px-1 col-span-2">
                     <h3 class="pb-3 text-3xl font-medium md:pr-16">
                         {{ __('about.section3.heading') }}
                     </h3>
-                    <div>
-                        <div class="my-16">
-                            <a
-                                target="_blank"
-                                href="https://www.capexus.cz/udalosti/sila-umeni-v-modernim-pracovnim-prostredi"
-                            >
-                                <img src="{{ asset('img/capexus.png') }}" alt="{{ config('app.name') }} - capexus" />
-                            </a>
+                    <div class="flex flex-col md:flex-row md:flex-wrap max-w-full space-y-6 md:space-x-6 justify-between md:justify-center text-center items-center">
+                        <div>
+                            <img src="{{ asset('img/veolia_logo.png') }}" alt="veolia" class="max-w-64">
                         </div>
-                        <div class="my-16">
-                            <a
-                                target="_blank"
-                                href="https://www.kesselbauer.sk/sk/novinky/atrium-projektu-kesselbauer-ozivi-originalne-umelecke-dielo"
-                            >
-                                <img
-                                    src="{{ asset('img/proxenta.png') }}"
-                                    alt="{{ config('app.name') }} - proxenta"
-                                />
-                            </a>
+                        <div>
+                            <img src="{{ asset('img/proxenta_logo.png') }}" alt="proxenta" class="max-w-64">
+                        </div>
+                        <div>
+                            <img src="{{ asset('img/capexus_logo.png') }}" alt="capexus" class="max-w-64">
+                        </div>
+                        <div>
+                            <img src="{{ asset('img/mercedes_benz_logo.png') }}" alt="mercedes benz" class="w-52">
+                        </div>
+                        <div>
+                            <img src="{{ asset('img/augustine_logo.png') }}" alt="augustine hotel" class="w-52">
                         </div>
                     </div>
                 </div>

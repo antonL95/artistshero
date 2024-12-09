@@ -7,9 +7,6 @@
         >
             {{ __('footer.heading') }}
         </h2>
-        <article class="whitespace-pre-line text-center text-[1rem] text-gray-80 md:mb-16 md:text-lg">
-            {{ __('footer.text') }}
-        </article>
         <div class="grid grid-cols-1 md:flex md:flex-row md:justify-between">
             <x-button
                 onclick="$modalOpen('contact-form-modal')"
@@ -26,7 +23,7 @@
                 {{ __('gallery.button') }}
             </x-link-button>
         </div>
-        <div class="text-white">
+        <div class="text-white md:mt-5">
             <h2 class="p-2.5 text-center text-3xl">
                 <img
                     class="mx-auto mb-10 w-6/12 rounded-full"
