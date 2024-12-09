@@ -356,7 +356,7 @@
                     <h3 class="pb-3 text-3xl font-medium md:pr-16">
                         {{ __('about.section3.heading') }}
                     </h3>
-                    <div class="flex flex-col md:flex-row md:flex-wrap max-w-full space-y-6 md:space-x-6 justify-between md:justify-center text-center items-center">
+                    <div class="flex flex-col md:flex-row md:flex-wrap max-w-full space-y-16 md:space-x-6 md:justify-between justify-center text-center items-center">
                         <div>
                             <img src="{{ asset('img/veolia_logo.png') }}" alt="veolia" class="max-w-64">
                         </div>
